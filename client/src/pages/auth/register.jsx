@@ -20,9 +20,13 @@ function AuthRegister() {
   function onSubmit(event) {
     event.preventDefault();
     dispatch(registerUser(formData)).then((data) => {
-      if (data?.payload?.success) navigate("/auth/login");
+      if (data?.payload?.success) {
+        toast(data?.payload?.message);
+        navigate("/auth/login");
+      } else {
+        toast.error(data?.payload?.message);
+      }
     });
-    toast("Registration Successful !!");
   }
   return (
     <div className="mx-auto w-full max-w-md space-y-6">
