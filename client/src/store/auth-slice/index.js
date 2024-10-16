@@ -1,9 +1,10 @@
+/* eslint-disable no-unused-vars */
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
 const initialState = {
   isAuthenticated: false,
-  isLoading: false,
+  isLoading: true,
   user: null,
   error: null,
 };
@@ -52,6 +53,26 @@ export const loginUser = createAsyncThunk(
   }
 );
 
+// check auth
+export const checkAuth = createAsyncThunk(
+  "/auth/checkAuth",
+
+  async () => {
+    const response = await axios.get(
+      "http://localhost:5000/api/auth/check-auth",
+      {
+        withCredentials: true,
+        headers: {
+          "Cache-Control":
+            "no-store, no-cache, must-revalidate, proxy-revalidate",
+          Expires: "0",
+        },
+      }
+    );
+    return response.data;
+  }
+);
+
 // slice
 const authSlice = createSlice({
   name: "auth",
@@ -92,6 +113,19 @@ const authSlice = createSlice({
         state.user = null;
         state.isAuthenticated = false;
         state.error = action?.payload?.message || "Registration Failed";
+      })
+      .addCase(checkAuth.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(checkAuth.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.user = action.payload.success ? action.payload.user : null;
+        state.isAuthenticated = action.payload.success;
+      })
+      .addCase(checkAuth.rejected, (state, action) => {
+        state.isLoading = false;
+        state.user = null;
+        state.isAuthenticated = false;
       });
   },
 });

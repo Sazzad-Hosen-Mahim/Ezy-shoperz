@@ -85,6 +85,37 @@ const loginUserController = async (req, res) => {
 
 // logout
 
+const logoutUser = (req, res) => {
+  res.clearCookie("token").json({
+    success: true,
+    message: "Logged Out Successfully",
+  });
+};
+
 // auth middleware
 
-module.exports = { registerUserController, loginUserController };
+const authMiddleware = async (req, res, next) => {
+  const token = req.cookies.token;
+  if (!token)
+    return res.status(401).json({
+      success: false,
+      message: "Unauthorized user!",
+    });
+  try {
+    const decoded = jwt.verify(token, "SECRET_KEY-235566887_CLIENT");
+    req.user = decoded;
+    next();
+  } catch (error) {
+    res.status(401).json({
+      success: false,
+      message: "Unauthorized user!",
+    });
+  }
+};
+
+module.exports = {
+  registerUserController,
+  loginUserController,
+  logoutUser,
+  authMiddleware,
+};
