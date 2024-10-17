@@ -4,6 +4,7 @@ import { Label } from "../ui/label";
 import { FileIcon, UploadCloudIcon, XIcon } from "lucide-react";
 import { Button } from "../ui/button";
 import axios from "axios";
+import { Skeleton } from "../ui/skeleton";
 
 function ProductImageUpload({
   imageFile,
@@ -11,6 +12,8 @@ function ProductImageUpload({
   uploadedImageUrl,
   setUploadedImageUrl,
   setImageLoadingState,
+  imageLoadingState,
+  isEditMode,
 }) {
   const inputRef = useRef(null);
 
@@ -64,7 +67,9 @@ function ProductImageUpload({
       <div
         onDragOver={handleDragOver}
         onDrop={handleDrop}
-        className="border-2 border-dashed rounded-lg p-4 mt-4"
+        className={` ${
+          isEditMode ? "opacity-60" : ""
+        } border-2 border-dashed rounded-lg p-4 mt-4`}
       >
         <Input
           id="image-upload"
@@ -72,15 +77,20 @@ function ProductImageUpload({
           className="hidden"
           ref={inputRef}
           onChange={handleImageChange}
+          disabled={isEditMode}
         />
         {!imageFile ? (
           <Label
             htmlFor="image-upload"
-            className="flex flex-col items-center h-32 cursor-pointer mt-5"
+            className={`${
+              isEditMode ? "cursor-not-allowed" : ""
+            } flex flex-col items-center h-32 cursor-pointer mt-5`}
           >
             <UploadCloudIcon className="w-10 h-10 text-muted-foreground mb-2" />
             <span>Drag & Drop or click to upload </span>
           </Label>
+        ) : imageLoadingState ? (
+          <Skeleton className="h-10 bg-gray-400"></Skeleton>
         ) : (
           <div className="flex items-center justify-between">
             <div className="flex items-center">
