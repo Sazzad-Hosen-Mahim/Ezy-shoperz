@@ -58,7 +58,13 @@ const loginUserController = async (req, res) => {
       });
     }
     const token = jwt.sign(
-      { id: user._id, role: user.role, email: user.email },
+      {
+        id: user._id,
+        role: user.role,
+        email: user.email,
+        userName: user.userName,
+      },
+
       "SECRET_KEY-235566887_CLIENT",
       {
         expiresIn: "1h",
@@ -72,6 +78,7 @@ const loginUserController = async (req, res) => {
         email: user.email,
         role: user.role,
         id: user._id,
+        userName: user.userName,
       },
     });
   } catch (error) {
