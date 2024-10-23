@@ -2,7 +2,7 @@ import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardFooter } from "../ui/card";
 
-function ShoppingProductTile({ product }) {
+function ShoppingProductTile({ product, handleGetProductDetails }) {
   const capitalize = (str) => {
     if (str.includes("&")) {
       return str.toUpperCase();
@@ -10,10 +10,14 @@ function ShoppingProductTile({ product }) {
       return str[0].toUpperCase() + str.slice(1);
     }
   };
+
+  const handleAddToCart = () => {
+    console.log("add to cart from product tile");
+  };
   // console.log(product);
   return (
-    <Card className="w-full max-w-sm mx-auto">
-      <div>
+    <Card className="w-full max-w-sm mx-auto hover:cursor-pointer">
+      <div onClick={() => handleGetProductDetails(product?._id)}>
         <div className="relative">
           <img
             src={product?.image}
@@ -51,7 +55,15 @@ function ShoppingProductTile({ product }) {
             </div>
           </CardContent>
           <CardFooter>
-            <Button className="w-full">Add to cart</Button>
+            <Button
+              onClick={(e) => {
+                e.stopPropagation();
+                handleAddToCart();
+              }}
+              className="w-full"
+            >
+              Add to cart
+            </Button>
           </CardFooter>
         </div>
       </div>

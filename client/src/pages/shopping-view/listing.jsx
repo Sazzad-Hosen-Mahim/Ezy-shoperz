@@ -1,4 +1,5 @@
 import ProductFilter from "@/components/shopping-view/filter";
+import ProductDetailsDialog from "@/components/shopping-view/product-details";
 import ShoppingProductTile from "@/components/shopping-view/product-tile";
 import { Button } from "@/components/ui/button";
 import {
@@ -9,7 +10,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { sortOptions } from "@/config";
-import { fetchFilteredProducts } from "@/store/shop/products-slice";
+import {
+  fetchFilteredProducts,
+  fetchProductDetails,
+} from "@/store/shop/products-slice";
 import { ArrowUpDown } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -29,10 +33,13 @@ function createSearchParamsHelpers(filterParams) {
 function ShoppingListing() {
   //fetch list of products
   const dispatch = useDispatch();
-  const { productList } = useSelector((state) => state.shopProduct);
+  const { productList, productDetails } = useSelector(
+    (state) => state.shopProduct
+  );
   const [filters, setFilters] = useState({});
   const [sort, setSort] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams();
+  const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
 
   function handleSort(value) {
     setSort(value);
@@ -60,6 +67,11 @@ function ShoppingListing() {
     sessionStorage.setItem("filters", JSON.stringify(cpyFilters));
   }
 
+  const handleGetProductDetails = (getCurrentProductId) => {
+    // console.log(getCurrentProductId);
+    dispatch(fetchProductDetails(getCurrentProductId));
+  };
+
   useEffect(() => {
     if (filters && Object.keys(filters).length > 0) {
       const createQueryString = createSearchParamsHelpers(filters);
@@ -79,7 +91,11 @@ function ShoppingListing() {
       );
   }, [dispatch, sort, filters]);
 
-  console.log(filters, searchParams, "filters");
+  useEffect(() => {
+    if (productDetails !== null) setOpenDetailsDialog(true);
+  }, [productDetails]);
+
+  console.log(productDetails, "productDetails");
   return (
     <div className="grid grid-cols-1 md:grid-cols-[180px_1fr] gap-6 p-4 md:p-6">
       <ProductFilter filters={filters} handleFilter={handleFilter} />
@@ -122,11 +138,17 @@ function ShoppingListing() {
                 <ShoppingProductTile
                   key={product?.id || index}
                   product={product}
+                  handleGetProductDetails={handleGetProductDetails}
                 ></ShoppingProductTile>
               ))
             : null}
         </div>
       </div>
+      <ProductDetailsDialog
+        open={openDetailsDialog}
+        setOpen={setOpenDetailsDialog}
+        productDetails={productDetails}
+      />
     </div>
   );
 }
