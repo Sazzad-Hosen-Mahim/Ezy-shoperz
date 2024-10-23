@@ -4,7 +4,6 @@ const {
   getFilteredProducts,
   getProductDetails,
 } = require("../../controllers/shop/product-controller");
-const { upload } = require("../../helpers/cloudinary");
 
 const router = express.Router();
 
