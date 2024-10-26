@@ -10,6 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { sortOptions } from "@/config";
+import { addToCart, fetchCartItems } from "@/store/shop/cart-slice";
 import {
   fetchFilteredProducts,
   fetchProductDetails,
@@ -18,6 +19,7 @@ import { ArrowUpDown } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useSearchParams } from "react-router-dom";
+import { toast } from "react-toastify";
 
 function createSearchParamsHelpers(filterParams) {
   const queryParams = [];
@@ -36,6 +38,9 @@ function ShoppingListing() {
   const { productList, productDetails } = useSelector(
     (state) => state.shopProduct
   );
+
+  const { user } = useSelector((state) => state.auth);
+
   const [filters, setFilters] = useState({});
   const [sort, setSort] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams();
@@ -72,6 +77,22 @@ function ShoppingListing() {
     dispatch(fetchProductDetails(getCurrentProductId));
   };
 
+  function handleAddToCart(getCurrentProductId) {
+    console.log(getCurrentProductId);
+    dispatch(
+      addToCart({
+        userId: user?.id,
+        productId: getCurrentProductId,
+        quantity: 1,
+      })
+    ).then((data) => {
+      if (data?.payload.success) {
+        dispatch(fetchCartItems(user?.id));
+        toast("Product is added to cart");
+      }
+    });
+  }
+
   useEffect(() => {
     if (filters && Object.keys(filters).length > 0) {
       const createQueryString = createSearchParamsHelpers(filters);
@@ -95,7 +116,7 @@ function ShoppingListing() {
     if (productDetails !== null) setOpenDetailsDialog(true);
   }, [productDetails]);
 
-  console.log(productDetails, "productDetails");
+  // .console.log(productDetails, "productDetails");
   return (
     <div className="grid grid-cols-1 md:grid-cols-[180px_1fr] gap-6 p-4 md:p-6">
       <ProductFilter filters={filters} handleFilter={handleFilter} />
@@ -139,6 +160,7 @@ function ShoppingListing() {
                   key={product?.id || index}
                   product={product}
                   handleGetProductDetails={handleGetProductDetails}
+                  handleAddToCart={handleAddToCart}
                 ></ShoppingProductTile>
               ))
             : null}

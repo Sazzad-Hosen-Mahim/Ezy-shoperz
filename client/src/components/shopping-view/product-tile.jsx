@@ -2,7 +2,11 @@ import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardFooter } from "../ui/card";
 
-function ShoppingProductTile({ product, handleGetProductDetails }) {
+function ShoppingProductTile({
+  product,
+  handleGetProductDetails,
+  handleAddToCart,
+}) {
   const capitalize = (str) => {
     if (str.includes("&")) {
       return str.toUpperCase();
@@ -11,9 +15,6 @@ function ShoppingProductTile({ product, handleGetProductDetails }) {
     }
   };
 
-  const handleAddToCart = () => {
-    console.log("add to cart from product tile");
-  };
   // console.log(product);
   return (
     <Card className="w-full max-w-sm mx-auto hover:cursor-pointer">
@@ -54,19 +55,18 @@ function ShoppingProductTile({ product, handleGetProductDetails }) {
               ) : null}
             </div>
           </CardContent>
-          <CardFooter>
-            <Button
-              onClick={(e) => {
-                e.stopPropagation();
-                handleAddToCart();
-              }}
-              className="w-full"
-            >
-              Add to cart
-            </Button>
-          </CardFooter>
         </div>
       </div>
+      <CardFooter>
+        <Button
+          onClick={() => {
+            handleAddToCart(product?._id);
+          }}
+          className="w-full"
+        >
+          Add to cart
+        </Button>
+      </CardFooter>
     </Card>
   );
 }

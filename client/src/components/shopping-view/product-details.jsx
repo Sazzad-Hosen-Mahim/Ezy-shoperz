@@ -4,8 +4,28 @@ import { Button } from "../ui/button";
 import { Dialog, DialogContent } from "../ui/dialog";
 import { Separator } from "../ui/separator";
 import { Input } from "../ui/input";
+import { useDispatch, useSelector } from "react-redux";
+import { addToCart, fetchCartItems } from "@/store/shop/cart-slice";
+import { toast } from "react-toastify";
 
 function ProductDetailsDialog({ open, setOpen, productDetails }) {
+  const { user } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+  function handleAddToCart(getCurrentProductId) {
+    console.log(getCurrentProductId);
+    dispatch(
+      addToCart({
+        userId: user?.id,
+        productId: getCurrentProductId,
+        quantity: 1,
+      })
+    ).then((data) => {
+      if (data?.payload.success) {
+        dispatch(fetchCartItems(user?.id));
+        toast("Product is added to cart");
+      }
+    });
+  }
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="grid grid-cols-2 gap-8 sm:p-12 max-w-[90vw] sm:max-w-[80vw] lg:max-w-[70vw]">
@@ -50,7 +70,12 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
             <span className="text-muted-foreground">{4.5}</span>
           </div>
           <div>
-            <Button className="mt-5 mb-5 w-full">Add to Cart</Button>
+            <Button
+              onClick={() => handleAddToCart(productDetails?._id)}
+              className="mt-5 mb-5 w-full"
+            >
+              Add to Cart
+            </Button>
           </div>
           <Separator />
           <div className="max-h-[300px] overflow-auto">
