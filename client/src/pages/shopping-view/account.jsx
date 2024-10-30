@@ -6,7 +6,7 @@ import Address from "@/components/shopping-view/address";
 function ShoppingAccount() {
   return (
     <div className="flex flex-col">
-      <div className="relative h-[400px] w-full overflow-hidden">
+      <div className="relative h-[500px] w-full overflow-hidden">
         <img
           src={accImg}
           alt=""

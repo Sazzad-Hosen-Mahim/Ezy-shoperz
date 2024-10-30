@@ -19,6 +19,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { checkAuth } from "./store/auth-slice";
 import { Skeleton } from "@/components/ui/skeleton";
+import Home from "./pages/Home";
 
 function App() {
   const { isAuthenticated, user, isLoading } = useSelector(
@@ -34,6 +35,8 @@ function App() {
   return (
     <div className="flex flex-col overflow-hidden bg-white">
       <Routes>
+        {/* home routes */}
+        <Route path="/" element={<Home></Home>}></Route>
         {/* auth routes  */}
         <Route
           path="/auth"

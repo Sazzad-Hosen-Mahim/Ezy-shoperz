@@ -1,6 +1,7 @@
 import {
   CircleUserRound,
   House,
+  LogIn,
   LogOut,
   Menu,
   ShoppingCart,
@@ -65,6 +66,10 @@ function HeaderRightContent() {
     dispatch(logoutUser());
   }
 
+  function handleLogin() {
+    navigate("/auth/login");
+  }
+
   useEffect(() => {
     dispatch(fetchCartItems(user?.id));
   }, [dispatch]);
@@ -94,7 +99,7 @@ function HeaderRightContent() {
         <DropdownMenuTrigger asChild>
           <Avatar className="bg-black">
             <AvatarFallback className="bg-black text-white font-extrabold">
-              {user.userName[0].toUpperCase()}
+              {user && user.userName[0].toUpperCase()}
             </AvatarFallback>
           </Avatar>
         </DropdownMenuTrigger>
@@ -106,10 +111,17 @@ function HeaderRightContent() {
             Account
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={handleLogOut}>
-            <LogOut className="mr-2 h-6 w-6" />
-            Logout
-          </DropdownMenuItem>
+          {user ? (
+            <DropdownMenuItem onClick={handleLogOut}>
+              <LogOut className="mr-2 h-6 w-6" />
+              Logout
+            </DropdownMenuItem>
+          ) : (
+            <DropdownMenuItem onClick={handleLogin}>
+              <LogIn className="mr-2 h-6 w-6" />
+              Login
+            </DropdownMenuItem>
+          )}
         </DropdownMenuContent>
       </DropdownMenu>
     </div>

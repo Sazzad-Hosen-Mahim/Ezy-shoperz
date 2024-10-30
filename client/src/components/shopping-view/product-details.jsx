@@ -8,24 +8,30 @@ import { useDispatch, useSelector } from "react-redux";
 import { addToCart, fetchCartItems } from "@/store/shop/cart-slice";
 import { toast } from "react-toastify";
 import { setProductDetails } from "@/store/shop/products-slice";
+import { useNavigate } from "react-router-dom";
 
 function ProductDetailsDialog({ open, setOpen, productDetails }) {
+  const navigate = useNavigate();
   const { user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   function handleAddToCart(getCurrentProductId) {
     console.log(getCurrentProductId);
-    dispatch(
-      addToCart({
-        userId: user?.id,
-        productId: getCurrentProductId,
-        quantity: 1,
-      })
-    ).then((data) => {
-      if (data?.payload.success) {
-        dispatch(fetchCartItems(user?.id));
-        toast("Product is added to cart");
-      }
-    });
+    if (user) {
+      dispatch(
+        addToCart({
+          userId: user?.id,
+          productId: getCurrentProductId,
+          quantity: 1,
+        })
+      ).then((data) => {
+        if (data?.payload.success) {
+          dispatch(fetchCartItems(user?.id));
+          toast("Product is added to cart");
+        }
+      });
+    } else {
+      navigate("/auth/login");
+    }
   }
 
   function handleDialogClose() {

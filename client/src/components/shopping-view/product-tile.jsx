@@ -1,12 +1,16 @@
+import { useNavigate } from "react-router-dom";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardFooter } from "../ui/card";
+import { useSelector } from "react-redux";
 
 function ShoppingProductTile({
   product,
   handleGetProductDetails,
   handleAddToCart,
 }) {
+  const navigate = useNavigate();
+  const { user } = useSelector((state) => state.auth);
   const capitalize = (str) => {
     if (str.includes("&")) {
       return str.toUpperCase();
