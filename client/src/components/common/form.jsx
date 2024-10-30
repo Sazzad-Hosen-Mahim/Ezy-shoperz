@@ -77,6 +77,7 @@ function CommonForm({
       case types.TEXTAREA:
         element = (
           <Textarea
+            className="bg-sky-100"
             name={getControlItem.name}
             placeholder={getControlItem.placeholder}
             id={getControlItem.id}
