@@ -77,7 +77,9 @@ function HeaderRightContent() {
     <div className="flex lg:items-center lg:flex-row flex-col gap-4">
       <Sheet open={openCartSheet} onOpenChange={() => setOpenCartSheet(false)}>
         <Button
-          onClick={() => setOpenCartSheet(true)}
+          onClick={() => {
+            setOpenCartSheet(true);
+          }}
           variant="outline"
           size="icon"
         >
@@ -85,6 +87,7 @@ function HeaderRightContent() {
           <span className="sr-only">User Cart</span>
         </Button>
         <UserCartWrapper
+          setOpenCartSheet={setOpenCartSheet}
           cartItems={
             cartItems.items &&
             cartItems.items.length &&
@@ -106,7 +109,11 @@ function HeaderRightContent() {
         <DropdownMenuContent side="right" className="w-56">
           <DropdownMenuLabel>Logged in as {user?.userName}</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={() => navigate("/shop/account")}>
+          <DropdownMenuItem
+            onClick={() => {
+              navigate("/shop/account");
+            }}
+          >
             <CircleUserRound className="mr-2 h-6 w-6" />
             Account
           </DropdownMenuItem>
