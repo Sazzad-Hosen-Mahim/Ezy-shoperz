@@ -1,5 +1,5 @@
 import Address from "@/components/shopping-view/address";
-import img from "../../assets/images/banner-image/lum3n--RBuQ2PK_L8-unsplash.jpg";
+import img from "../../assets/images/checkout/230 (1)-01.jpeg";
 import { useSelector } from "react-redux";
 import UserCartItemsContent from "@/components/shopping-view/cart-items-content";
 import { Button } from "@/components/ui/button";
@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 function ShoppingCheckout() {
   const { cartItems } = useSelector((state) => state.shopCart);
   const totalCartAmount =
-    cartItems && cartItems.items.length > 0
+    cartItems && cartItems.items && cartItems.items.length > 0
       ? cartItems.items.reduce(
           (sum, currentItem) =>
             sum +

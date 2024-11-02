@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
-import bannerOne from "../../assets/images/banner-image/full-length-portrait-jumping-white-girls-expressing-happy-emotions-portrait-best-friends-funny-dancing-together.jpg";
-import bannerTwo from "../../assets/images/banner-image/2.jpg";
-import bannerThree from "../../assets/images/banner-image/excited-pinup-girl-playing-with-striped-dress-studio-shot-laughing-woman-dancing-blue-background.jpg";
+import bannerOne from "../../assets/images/banner-image/1-new.jpeg";
+import bannerTwo from "../../assets/images/banner-image/2-new-new.jpeg";
+import bannerThree from "../../assets/images/banner-image/3-new.jpeg";
 import {
   BabyIcon,
   ChevronLeftIcon,
