@@ -2,9 +2,21 @@ import { Button } from "../ui/button";
 import { Card, CardContent, CardFooter } from "../ui/card";
 import { Label } from "../ui/label";
 
-function AddressCard({ addressInfo, handleDeleteAddress, handleEditAddress }) {
+function AddressCard({
+  addressInfo,
+  handleDeleteAddress,
+  handleEditAddress,
+  setCurrentSelectedAddress,
+}) {
   return (
-    <Card className="flex flex-col justify-between h-full">
+    <Card
+      onClick={
+        setCurrentSelectedAddress
+          ? () => setCurrentSelectedAddress(addressInfo)
+          : null
+      }
+      className="flex flex-col justify-between h-full"
+    >
       <CardContent className="grid gap-4 p-3">
         <Label>Address: {addressInfo?.address}</Label>
         <Label>City: {addressInfo?.city}</Label>

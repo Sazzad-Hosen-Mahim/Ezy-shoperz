@@ -7,6 +7,8 @@ const adminProductsRouter = require("./routes/admin/product-routes");
 const shopProductsRouter = require("./routes/shop/product-routes");
 const shopCartRouter = require("./routes/shop/cart-routes");
 const shopAddressRouter = require("./routes/shop/address-routes");
+const shopOrderRouter = require("./routes/shop/order-routes");
+const adminOrderRouter = require("./routes/admin/order-routes");
 
 //create a database connection
 connectMongoDb("mongodb+srv://mmahim67:mahim42568@cluster0.hmv8t.mongodb.net/");
@@ -33,10 +35,18 @@ app.use(cookieParser());
 app.use(express.json());
 
 //route use
+
+//auth
 app.use("/api/auth", authRouter);
+
+// admin
 app.use("/api/admin/products", adminProductsRouter);
+app.use("/api/admin/orders", adminOrderRouter);
+
+// shop
 app.use("/api/shop/products", shopProductsRouter);
 app.use("/api/shop/cart", shopCartRouter);
 app.use("/api/shop/address", shopAddressRouter);
+app.use("/api/shop/order", shopOrderRouter);
 
 app.listen(PORT, () => console.log(`Server is running on ${PORT}`));

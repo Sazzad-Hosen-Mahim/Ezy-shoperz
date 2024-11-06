@@ -20,6 +20,8 @@ import { useEffect } from "react";
 import { checkAuth } from "./store/auth-slice";
 import { Skeleton } from "@/components/ui/skeleton";
 import Home from "./pages/Home";
+import PaypalReturnPage from "./pages/shopping-view/paypal-return";
+import PaymentSuccessPage from "./pages/shopping-view/payment-success";
 
 function App() {
   const { isAuthenticated, user, isLoading } = useSelector(
@@ -76,6 +78,8 @@ function App() {
           <Route path="listing" element={<ShoppingListing />} />
           <Route path="checkout" element={<ShoppingCheckout />} />
           <Route path="account" element={<ShoppingAccount />} />
+          <Route path="paypal-return" element={<PaypalReturnPage />} />
+          <Route path="payment-success" element={<PaymentSuccessPage />} />
         </Route>
 
         {/* not fount route  */}

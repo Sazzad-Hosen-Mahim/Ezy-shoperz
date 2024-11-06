@@ -3,60 +3,119 @@ import { DialogContent } from "../ui/dialog";
 import { Label } from "../ui/label";
 import CommonForm from "../common/form";
 import { useState } from "react";
+import { Badge } from "../ui/badge";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  getAllOrdersForAdmin,
+  getOrderDetailsForAdmin,
+  updateOrderStatus,
+} from "@/store/admin/order-slice";
+import { toast } from "react-toastify";
 
 const initialFormData = {
   status: "",
 };
 
-function AdminOrderDetails() {
+const statusColors = {
+  delivered: "bg-green-500 hover:bg-green-600 text-black",
+  confirmed: "bg-green-400 hover:bg-green-500",
+  rejected: "bg-red-600 hover:bg-red-800",
+  inShipping: "bg-violet-400 hover:bg-violet-500",
+  shipped: "bg-blue-500 hover:bg-blue-600",
+  packaging: "bg-purple-500 hover:bg-purple-600",
+  inProcess: "bg-teal-500 hover:bg-teal-600",
+  "in packaging": "bg-orange-400",
+  pending: "bg-yellow-400 hover:bg-yellow-500 text-black",
+};
+
+function AdminOrderDetails({ orderDetails }) {
+  const badgeColor =
+    statusColors[orderDetails?.orderStatus] ||
+    "bg-gray-300 text-black hover:text-white";
+
   const [formData, setFormData] = useState(initialFormData);
+  const { user } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
 
   function handleUpdateStatus(e) {
     e.preventDefault();
+    const { status } = formData;
+
+    dispatch(
+      updateOrderStatus({ id: orderDetails?._id, orderStatus: status })
+    ).then((data) => {
+      if (data?.payload?.success) {
+        dispatch(getOrderDetailsForAdmin(orderDetails?._id));
+        dispatch(getAllOrdersForAdmin());
+        setFormData(initialFormData);
+        toast("Order status updated");
+      }
+    });
   }
   return (
     <DialogContent className="sm:max-w-[600px]">
       <div className="grid gap-6">
         <div className="grid gap-2">
-          <div className="flex items-center justify-between mt-5">
+          <div className="flex mt-6 items-center justify-between">
             <p className="font-medium">Order ID</p>
-            <Label>12345</Label>
+            <Label>{orderDetails?._id}</Label>
           </div>
-          <div className="flex items-center justify-between mt-2">
+          <div className="flex mt-2 items-center justify-between">
             <p className="font-medium">Order Date</p>
-            <Label>12/34/2025</Label>
+            <Label>{orderDetails?.orderDate.split("T")[0]}</Label>
           </div>
-          <div className="flex items-center justify-between mt-5">
-            <p className="font-medium">Price</p>
-            <Label>$ 12345</Label>
+          <div className="flex mt-2 items-center justify-between">
+            <p className="font-medium">Order Price</p>
+            <Label>${orderDetails?.totalAmount}</Label>
           </div>
-          <div className="flex items-center justify-between mt-2">
+          <div className="flex mt-2 items-center justify-between">
+            <p className="font-medium">Payment method</p>
+            <Label>{orderDetails?.paymentMethod}</Label>
+          </div>
+          <div className="flex mt-2 items-center justify-between">
+            <p className="font-medium">Payment Status</p>
+            <Label>{orderDetails?.paymentStatus}</Label>
+          </div>
+          <div className="flex mt-2 items-center justify-between">
             <p className="font-medium">Order Status</p>
-            <Label>In Process</Label>
+            <Label>
+              <Badge className={`py-1 px-3 ${badgeColor}`}>
+                {orderDetails?.orderStatus}
+              </Badge>
+            </Label>
           </div>
         </div>
         <Separator />
-        <div className="grid gap-4 ">
+        <div className="grid gap-4">
           <div className="grid gap-2">
             <div className="font-medium">Order Details</div>
             <ul className="grid gap-3">
-              <li className="flex items-center justify-between">
-                <span>Product One</span>
-                <span>$ 100</span>
-              </li>
+              {orderDetails?.cartItems && orderDetails?.cartItems.length > 0
+                ? orderDetails?.cartItems.map((item) => (
+                    <li
+                      key={item?.productId}
+                      className="flex items-center justify-between"
+                    >
+                      <span>Title: {item.title}</span>
+                      <span>Quantity: {item.quantity}</span>
+                      <span>Price: ${item.price}</span>
+                    </li>
+                  ))
+                : null}
             </ul>
           </div>
         </div>
-        <div className="grid gap-4 ">
+        <div className="grid gap-4">
           <div className="grid gap-2">
             <div className="font-medium">Shipping Info</div>
             <div className="grid gap-0.5 text-muted-foreground">
-              <span>John Doe</span>
-              <span>Address</span>
-              <span>City</span>
-              <span>Pin Code</span>
-              <span>Phone</span>
-              <span>Notes</span>
+              <span>{user.userName}</span>
+              <span>{user.email}</span>
+              <span>{orderDetails?.addressInfo?.address}</span>
+              <span>{orderDetails?.addressInfo?.city}</span>
+              <span>{orderDetails?.addressInfo?.pincode}</span>
+              <span>{orderDetails?.addressInfo?.phone}</span>
+              <span>{orderDetails?.addressInfo?.notes}</span>
             </div>
           </div>
         </div>
@@ -71,11 +130,12 @@ function AdminOrderDetails() {
                 options: [
                   { id: "pending", label: "Pending" },
                   { id: "inProcess", label: "In Process" },
-                  { id: "packaging", label: "In Packaging" },
+                  { id: "packaging", label: "Packaging" },
                   { id: "inShipping", label: "In Shipping" },
                   { id: "shipped", label: "Shipped" },
                   { id: "rejected", label: "Rejected" },
                   { id: "delivered", label: "Delivered" },
+                  { id: "confirmed", label: "Confirmed" },
                 ],
               },
             ]}
