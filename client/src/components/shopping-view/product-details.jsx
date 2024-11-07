@@ -13,9 +13,25 @@ import { useNavigate } from "react-router-dom";
 function ProductDetailsDialog({ open, setOpen, productDetails }) {
   const navigate = useNavigate();
   const { user } = useSelector((state) => state.auth);
+  const { cartItems } = useSelector((state) => state.shopCart);
+
   const dispatch = useDispatch();
-  function handleAddToCart(getCurrentProductId) {
+  function handleAddToCart(getCurrentProductId, getTotalStock) {
     console.log(getCurrentProductId);
+    let getCartItems = cartItems.items || [];
+
+    if (getCartItems.length) {
+      const indexOfCurrentItem = getCartItems.findIndex(
+        (item) => item.productId === getCurrentProductId
+      );
+      if (indexOfCurrentItem !== -1) {
+        const getQuantity = getCartItems[indexOfCurrentItem].quantity;
+        if (getQuantity + 1 > getTotalStock) {
+          toast.error(`Only ${getQuantity} can be added for this item`);
+          return;
+        }
+      }
+    }
     if (user) {
       dispatch(
         addToCart({
@@ -82,12 +98,23 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
             <span className="text-muted-foreground">{4.5}</span>
           </div>
           <div>
-            <Button
-              onClick={() => handleAddToCart(productDetails?._id)}
-              className="mt-5 mb-5 w-full"
-            >
-              Add to Cart
-            </Button>
+            {productDetails?.totalStock === 0 ? (
+              <Button className="mt-5 mb-5 w-full opacity-60 cursor-not-allowed">
+                Out of Stock
+              </Button>
+            ) : (
+              <Button
+                onClick={() =>
+                  handleAddToCart(
+                    productDetails?._id,
+                    productDetails?.totalStock
+                  )
+                }
+                className="mt-5 mb-5 w-full"
+              >
+                Add to Cart
+              </Button>
+            )}
           </div>
           <Separator />
           <div className="max-h-[300px] overflow-auto">

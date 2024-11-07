@@ -6,6 +6,9 @@ import { toast } from "react-toastify";
 
 function UserCartItemsContent({ cartItem }) {
   const { user } = useSelector((state) => state?.auth);
+  const { cartItems } = useSelector((state) => state.shopCart);
+  const { productList } = useSelector((state) => state.shopProduct);
+
   const dispatch = useDispatch();
   function handleCartItemDelete(getCartItem) {
     dispatch(
@@ -18,6 +21,26 @@ function UserCartItemsContent({ cartItem }) {
   }
 
   function handleUpdateQuantity(getCartItem, typeOfAction) {
+    if (typeOfAction === "increase") {
+      let getCartItems = cartItems.items || [];
+
+      if (getCartItems.length) {
+        const indexOfCurrentCartItem = getCartItems.findIndex(
+          (item) => item.productId === getCartItem?.productId
+        );
+        const getCurrentProductIndex = productList.findIndex(
+          (product) => product?._id === getCartItem?.productId
+        );
+        const getTotalStock = productList[getCurrentProductIndex].totalStock;
+        if (indexOfCurrentCartItem !== -1) {
+          const getQuantity = getCartItems[indexOfCurrentCartItem].quantity;
+          if (getQuantity + 1 > getTotalStock) {
+            toast.error(`Only ${getQuantity} can be added for this item`);
+            return;
+          }
+        }
+      }
+    }
     dispatch(
       updateCart({
         userId: user?.id,

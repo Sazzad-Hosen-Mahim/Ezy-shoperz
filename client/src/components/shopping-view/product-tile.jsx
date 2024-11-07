@@ -77,7 +77,7 @@ function ShoppingProductTile({
         ) : (
           <Button
             onClick={() => {
-              handleAddToCart(product?._id);
+              handleAddToCart(product?._id, product?.totalStock);
             }}
             className="w-full"
           >

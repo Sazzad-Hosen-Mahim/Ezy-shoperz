@@ -39,6 +39,8 @@ function ShoppingListing() {
     (state) => state.shopProduct
   );
 
+  const { cartItems } = useSelector((state) => state.shopCart);
+
   const { user } = useSelector((state) => state.auth);
 
   const [filters, setFilters] = useState({});
@@ -79,8 +81,22 @@ function ShoppingListing() {
     dispatch(fetchProductDetails(getCurrentProductId));
   };
 
-  function handleAddToCart(getCurrentProductId) {
-    console.log(getCurrentProductId);
+  function handleAddToCart(getCurrentProductId, getTotalStock) {
+    console.log(cartItems, "cartI");
+    let getCartItems = cartItems.items || [];
+
+    if (getCartItems.length) {
+      const indexOfCurrentItem = getCartItems.findIndex(
+        (item) => item.productId === getCurrentProductId
+      );
+      if (indexOfCurrentItem !== -1) {
+        const getQuantity = getCartItems[indexOfCurrentItem].quantity;
+        if (getQuantity + 1 > getTotalStock) {
+          toast.error(`Only ${getQuantity} can be added for this item`);
+          return;
+        }
+      }
+    }
     dispatch(
       addToCart({
         userId: user?.id,
