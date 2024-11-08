@@ -97,8 +97,13 @@ function HeaderRightContent() {
           }}
           variant="outline"
           size="icon"
+          className="relative border-none"
         >
-          <ShoppingCart className="w-6 h-6" />
+          <ShoppingCart className="w-6 h-6 " />
+          <span className=" p-0 text-red-400 absolute top-[-4px] right-[-1px] font-bold text-md">
+            {cartItems?.items?.length || "0"}
+          </span>
+
           <span className="sr-only">User Cart</span>
         </Button>
         <UserCartWrapper
