@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
-import bannerOne from "../../assets/images/banner-image/1-new.jpeg";
-import bannerTwo from "../../assets/images/banner-image/2-new-new.jpeg";
-import bannerThree from "../../assets/images/banner-image/3-new.jpeg";
+import bannerOne from "../assets/images/banner-image/full-length-portrait-jumping-white-girls-expressing-happy-emotions-portrait-best-friends-funny-dancing-together.jpg";
+import bannerTwo from "../assets/images/banner-image/2.jpg";
+import bannerThree from "../assets/images/banner-image/excited-pinup-girl-playing-with-striped-dress-studio-shot-laughing-woman-dancing-blue-background.jpg";
 import {
   BabyIcon,
   ChevronLeftIcon,
@@ -23,7 +23,7 @@ import { useNavigate } from "react-router-dom";
 import { addToCart, fetchCartItems } from "@/store/shop/cart-slice";
 import { toast } from "react-toastify";
 import ProductDetailsDialog from "@/components/shopping-view/product-details";
-import { getFeatureImages } from "@/store/common-slice";
+import ShoppingHeader from "@/components/shopping-view/header";
 
 const categoriesWithIcon = [
   { id: "men", label: "Men", icon: ShirtIcon },
@@ -42,10 +42,8 @@ const brand = [
   { id: "h&m", label: "H&M", icon: CloudLightningIcon },
 ];
 
-function ShoppingHome() {
+function Home() {
   const { user } = useSelector((state) => state.auth);
-  const { featureImageList } = useSelector((state) => state.commonFeature);
-
   const dispatch = useDispatch();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
@@ -73,18 +71,22 @@ function ShoppingHome() {
 
   function handleAddToCart(getCurrentProductId) {
     console.log(getCurrentProductId);
-    dispatch(
-      addToCart({
-        userId: user?.id,
-        productId: getCurrentProductId,
-        quantity: 1,
-      })
-    ).then((data) => {
-      if (data?.payload.success) {
-        dispatch(fetchCartItems(user?.id));
-        toast("Product is added to cart");
-      }
-    });
+    if (user) {
+      dispatch(
+        addToCart({
+          userId: user?.id,
+          productId: getCurrentProductId,
+          quantity: 1,
+        })
+      ).then((data) => {
+        if (data?.payload.success) {
+          dispatch(fetchCartItems(user?.id));
+          toast("Product is added to cart");
+        }
+      });
+    } else {
+      navigate("/auth/login");
+    }
   }
 
   useEffect(() => {
@@ -105,27 +107,22 @@ function ShoppingHome() {
     if (productDetails !== null) setOpenDetailsDialog(true);
   }, [productDetails]);
 
-  useEffect(() => {
-    dispatch(getFeatureImages());
-  }, [dispatch]);
-
   //   console.log(productList, "productList");
 
   return (
     <div className="flex flex-col min-h-screen">
+      <ShoppingHeader></ShoppingHeader>
       <div className="relative w-full h-[600px] overflow-hidden">
-        {featureImageList && featureImageList.length > 0
-          ? featureImageList.map((slide, index) => (
-              <img
-                key={index}
-                src={slide?.image}
-                alt="image"
-                className={` ${
-                  index === currentSlide ? "opacity-100" : "opacity-0"
-                } absolute top-0 left-0 w-full h-full object-cover transition-opacity duration-1000`}
-              />
-            ))
-          : null}
+        {slides.map((slide, index) => (
+          <img
+            key={index}
+            src={slide}
+            alt="image"
+            className={` ${
+              index === currentSlide ? "opacity-100" : "opacity-0"
+            } absolute top-0 left-0 w-full h-full object-cover transition-opacity duration-1000`}
+          />
+        ))}
         <Button
           variant="outline"
           size="icon"
@@ -219,4 +216,4 @@ function ShoppingHome() {
   );
 }
 
-export default ShoppingHome;
+export default Home;
