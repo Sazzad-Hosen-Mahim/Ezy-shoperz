@@ -14,15 +14,25 @@ const shopReviewRouter = require("./routes/shop/review-routes");
 
 const commonFeatureRouter = require("./routes/common/feature-routes");
 
+//environment variable
+require("dotenv").config();
+
+const mongoUri = process.env.MONGODB_URI;
+
+if (!mongoUri) {
+  console.error("MONGODB_URI is not defined in the .env file");
+  process.exit(1); // Exit the application if the variable is missing
+}
+
 //create a database connection
-connectMongoDb("mongodb+srv://mmahim67:mahim42568@cluster0.hmv8t.mongodb.net/");
+connectMongoDb(mongoUri);
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
 app.use(
   cors({
-    origin: ["http://localhost:5173"],
+    origin: ["http://localhost:5173", "https://ezy-shoperz-rf7y.vercel.app"],
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: [
       "Content-Type",

@@ -65,7 +65,7 @@ const loginUserController = async (req, res) => {
         userName: user.userName,
       },
 
-      "SECRET_KEY-235566887_CLIENT",
+      process.env.JWT_SECRET,
       {
         expiresIn: "1h",
       }
