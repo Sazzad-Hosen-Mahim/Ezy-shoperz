@@ -22,6 +22,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import PaypalReturnPage from "./pages/shopping-view/paypal-return";
 import PaymentSuccessPage from "./pages/shopping-view/payment-success";
 import SearchProducts from "./pages/shopping-view/Search";
+import Home from "./pages/Home";
 
 function App() {
   const { isAuthenticated, user, isLoading } = useSelector(
@@ -38,15 +39,7 @@ function App() {
     <div className="flex flex-col overflow-hidden bg-white">
       <Routes>
         {/* home routes */}
-        <Route
-          path="/"
-          element={
-            <CheckAuth
-              isAuthenticated={isAuthenticated}
-              user={user}
-            ></CheckAuth>
-          }
-        ></Route>
+        <Route path="/" element={<Home></Home>}></Route>
         {/* auth routes  */}
         <Route
           path="/auth"
