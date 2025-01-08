@@ -79,6 +79,7 @@ function HeaderRightContent() {
 
   function handleLogOut() {
     dispatch(logoutUser());
+    navigate("/");
   }
 
   function handleLogin() {
